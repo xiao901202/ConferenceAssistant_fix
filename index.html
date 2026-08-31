@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#0b1320" />
+<title>沖繩行程地圖｜2026/09/01–09/05</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+:root{--bg:#0b1320;--panel:#111b2b;--panel2:#172338;--text:#f7fafc;--muted:#9fb0c8;--line:rgba(255,255,255,.1);--accent:#61d0ff;--good:#67d9aa;--warn:#ffc66d;--danger:#ff7d7d;--shadow:0 18px 60px rgba(0,0,0,.35)}
+*{box-sizing:border-box}html,body,#map{height:100%;margin:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--text);overflow:hidden}button,a{font:inherit}.leaflet-control-attribution{font-size:9px!important}.leaflet-popup-content-wrapper{border-radius:16px}.leaflet-popup-content{margin:12px 14px;line-height:1.5}.leaflet-popup-tip-container{display:none}
+#map{position:fixed;inset:0;background:#dce7ec}
+.top{position:fixed;z-index:1000;left:0;right:0;top:0;padding:calc(10px + env(safe-area-inset-top)) 12px 0;background:linear-gradient(180deg,rgba(8,15,26,.96) 0%,rgba(8,15,26,.76) 70%,transparent 100%);pointer-events:none}.toprow{display:flex;gap:8px;align-items:center;pointer-events:auto}.brand,.glass{background:rgba(11,19,32,.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line);box-shadow:var(--shadow)}.brand{flex:1;min-width:0;border-radius:18px;padding:10px 13px}.brand h1{margin:0;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand p{margin:3px 0 0;color:var(--muted);font-size:11px}.fit{border:1px solid var(--line);border-radius:16px;background:rgba(11,19,32,.9);color:#fff;padding:12px 13px;cursor:pointer}.days{display:flex;gap:7px;overflow-x:auto;padding:8px 0 14px;scrollbar-width:none;pointer-events:auto}.days::-webkit-scrollbar{display:none}.day{flex:0 0 auto;border:1px solid var(--line);background:rgba(11,19,32,.86);color:#dce7f5;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:750;cursor:pointer}.day.active{background:#fff;color:#111b2b;border-color:#fff}
+.maptools{position:fixed;z-index:900;right:11px;top:calc(122px + env(safe-area-inset-top));display:grid;gap:7px}.maptools button{width:40px;height:40px;border:0;border-radius:13px;background:#fff;color:#142033;font-size:20px;box-shadow:0 8px 22px rgba(0,0,0,.22);cursor:pointer}
+.next{position:fixed;z-index:940;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));display:flex;justify-content:center;pointer-events:none}.nextin{pointer-events:auto;width:min(100%,560px);display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:18px;background:rgba(10,18,31,.93);backdrop-filter:blur(18px);border:1px solid var(--line);box-shadow:var(--shadow);cursor:pointer}.num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--accent);color:#08202a;font-weight:900}.ntxt{min-width:0;flex:1}.ntxt small{display:block;color:var(--muted);font-size:10px}.ntxt strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.arr{font-size:22px;color:var(--muted)}
+.bottom{position:fixed;z-index:1000;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:6px;border-radius:20px;background:rgba(9,16,28,.95);backdrop-filter:blur(22px);border:1px solid var(--line);box-shadow:var(--shadow)}.nav{border:0;background:transparent;color:var(--muted);border-radius:14px;padding:7px 2px;font-size:10px;cursor:pointer}.nav b{display:block;color:#fff;font-size:18px;line-height:19px;margin-bottom:3px}.nav.active{background:rgba(255,255,255,.09);color:#fff}
+.sheet{position:fixed;z-index:980;left:10px;right:10px;bottom:calc(80px + env(safe-area-inset-bottom));max-height:min(60vh,650px);border-radius:24px;background:rgba(12,21,35,.97);backdrop-filter:blur(22px);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;transform:translateY(calc(100% + 120px));transition:.26s ease}.sheet.open{transform:translateY(0)}.grab{width:42px;height:4px;border-radius:99px;background:rgba(255,255,255,.24);margin:8px auto 2px}.shead{display:flex;align-items:center;gap:10px;padding:8px 14px 10px;border-bottom:1px solid var(--line)}.shead h2{margin:0;flex:1;font-size:15px}.x{border:0;background:rgba(255,255,255,.08);color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer}.sbody{max-height:calc(min(60vh,650px) - 56px);overflow:auto;padding:10px 12px 18px}
+.timeline{display:grid;gap:8px}.stop{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:10px;border-radius:16px;background:rgba(255,255,255,.052);border:1px solid rgba(255,255,255,.045);cursor:pointer}.stop.active{outline:2px solid var(--accent);background:rgba(97,208,255,.10)}.time{color:#bcecff;font-size:12px;font-weight:850;padding-top:2px}.stop h3{margin:0 0 4px;font-size:14px}.stop p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}.tag{font-size:10px;padding:4px 7px;border-radius:99px;background:rgba(255,255,255,.08);color:#dbe6f4}.tag.warn{background:rgba(255,198,109,.13);color:var(--warn)}.tag.good{background:rgba(103,217,170,.13);color:var(--good)}
+.card{padding:12px;border-radius:17px;background:rgba(255,255,255,.05);border:1px solid var(--line);margin-bottom:9px}.card h3{margin:0 0 7px;font-size:14px}.card p{margin:4px 0;color:var(--muted);font-size:12px;line-height:1.55}.card strong{color:#fff}.warnbox{padding:10px 11px;margin-bottom:10px;border-radius:14px;background:rgba(255,198,109,.08);border:1px solid rgba(255,198,109,.3);color:#ffe0a1;font-size:12px;line-height:1.55}.routebtn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;text-decoration:none;color:#061b25;background:var(--accent);border-radius:10px;padding:7px 9px;font-size:11px;font-weight:850}
+.pin{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;background:#0d1a2c;color:#fff;font-size:12px;font-weight:900;box-shadow:0 5px 14px rgba(0,0,0,.35)}.pin.hotel{background:#7455e8}.pin.water{background:#078fb9}.pin.food{background:#d37b12}.pin.air{background:#596579}.pin.pending{background:#b57a1f}
+.side{display:none}textarea{width:100%;min-height:170px;padding:12px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;resize:vertical;outline:none}.actions{display:flex;gap:8px;margin-top:8px}.act{border:1px solid var(--line);background:rgba(255,255,255,.06);color:#fff;border-radius:11px;padding:8px 11px;font-size:12px;cursor:pointer}.act.primary{background:var(--accent);color:#06202b;border-color:transparent}
+@media(min-width:900px){.top{right:390px}.bottom,.sheet{display:none}.side{display:block;position:fixed;z-index:990;right:0;top:0;bottom:0;width:390px;background:rgba(9,16,28,.97);border-left:1px solid var(--line);padding:20px 16px;overflow:auto}.side h2{margin:0 0 5px;font-size:20px}.side .sub{font-size:12px;color:var(--muted);margin-bottom:14px}.next{right:auto;left:18px;bottom:18px;width:440px}.maptools{right:405px}}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<header class="top"><div class="toprow"><div class="brand"><h1>沖繩自由行・改期版</h1><p>2026/09/01–09/05 ・ 2 人 ・ 北部 → 中部 → 南部</p></div><button class="fit" id="fitBtn">◎ 全覽</button></div><div class="days" id="days"></div></header>
+<div class="maptools"><button id="zin">＋</button><button id="zout">−</button></div>
+<div class="next"><div class="nextin" id="next"><div class="num" id="nnum">1</div><div class="ntxt"><small id="nsmall"></small><strong id="nname"></strong></div><div class="arr">›</div></div></div>
+<nav class="bottom"><button class="nav active" data-panel="timeline"><b>▤</b>行程</button><button class="nav" data-panel="info"><b>ⓘ</b>資訊</button><button class="nav" data-panel="plan"><b>⌁</b>方案</button><button class="nav" data-panel="notes"><b>✎</b>備忘</button></nav>
+<section class="sheet open" id="sheet"><div class="grab"></div><div class="shead"><h2 id="stitle"></h2><button class="x" id="close">×</button></div><div class="sbody" id="sbody"></div></section>
+<aside class="side"><h2 id="dtitle"></h2><div class="sub">點行程卡定位。路線線條只代表順序，不是實際導航道路。</div><div id="dtimeline"></div></aside>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const days=[
+{id:'0901',label:'9/1 二',title:'9/1（二）｜抵達沖繩・直接北上',color:'#f5a742',stops:[
+{t:'14:55',name:'桃園 T1 出發｜VZ568',note:'新機票：14:55 TPE → 17:20 OKA。',lat:25.0797,lng:121.2342,type:'air',tag:'航班'},
+{t:'17:20',name:'那霸機場',note:'入境後直接取車，不安排那霸市區景點。',lat:26.2064,lng:127.6466,type:'air',tag:'抵達'},
+{t:'18:20',name:'美麗島租車・取車',note:'已改為 18:20。驗車與文件完成後直接北上。',lat:26.2188,lng:127.6900,type:'',tag:'已改期'},
+{t:'約 21:00',name:'Yukurina Resort Okinawa',note:'本部町石川 760-2。途中便利商店買晚餐與隔日早餐。',lat:26.6948,lng:127.8813,type:'hotel',tag:'住宿'}]},
+{id:'0902',label:'9/2 三',title:'9/2（三）｜古宇利＋美麗海＋瀨底 → 北谷',color:'#2fb3db',stops:[
+{t:'06:45',name:'Yukurina 出發',note:'退房、行李上車。今天一路由北往南。',lat:26.6948,lng:127.8813,type:'hotel'},
+{t:'07:30',name:'古宇利島・古宇利大橋',note:'不等夕陽。早上人少、車少，海色也漂亮；約 60–75 分。',lat:26.7029,lng:128.0168,type:'water',tag:'海景'},
+{t:'09:20',name:'備瀨福木林道',note:'抓 35–45 分鐘即可，避免壓縮水族館。',lat:26.7069,lng:127.8791,type:''},
+{t:'10:10',name:'沖繩美麗海水族館',note:'主力景點，約 2.5 小時；海豚表演視時間彈性。',lat:26.6944,lng:127.8779,type:'water',tag:'必去'},
+{t:'12:50',name:'本部午餐',note:'控制 45–60 分鐘。',lat:26.6580,lng:127.8880,type:'food'},
+{t:'14:00',name:'瀨底海灘',note:'這天唯一完整玩水。約 90 分鐘＋沖澡換衣。',lat:26.6362,lng:127.8601,type:'water',tag:'玩水'},
+{t:'16:00',name:'南下北谷',note:'瀨底 → 北谷抓約 90 分鐘，依交通調整。',lat:26.5000,lng:127.8300,type:''},
+{t:'17:30',name:'Luana Uakoko Resort Hotel',note:'北谷町桑江 1-6-23。放行李後去美國村。',lat:26.3216,lng:127.7638,type:'hotel',tag:'住宿'},
+{t:'18:10',name:'美國村・Depot Island',note:'夕陽、晚餐、Blue Seal；不安排購物任務。',lat:26.3153,lng:127.7578,type:'',tag:'夕陽'}]},
+{id:'0903',label:'9/3 四',title:'9/3（四）｜青之洞窟早場＋南部',color:'#6c7cff',stops:[
+{t:'早場待確認',name:'青之洞窟／真榮田岬',note:'最佳解：改到 9/3 最早場。從北谷過來順路；完整浮潛抓 1.5–2 小時。',lat:26.4436,lng:127.7717,type:'pending',tag:'待確認'},
+{t:'約 11:15',name:'首里城',note:'浮潛後一路向南。停留約 60 分鐘。',lat:26.2170,lng:127.7195,type:''},
+{t:'約 13:35',name:'知念岬公園',note:'縮成 20–30 分鐘，看海即可。',lat:26.1670,lng:127.8281,type:'water'},
+{t:'14:10',name:'Okinawa World・玉泉洞',note:'14:30 Super Eisa → 玉泉洞 → 王國村，約 16:30 離開。',lat:26.1400,lng:127.7493,type:''},
+{t:'17:10',name:'瀨長島 Umikaji Terrace',note:'看飛機＋夕陽，約 18:55 離開。',lat:26.1767,lng:127.6468,type:'water',tag:'夕陽'},
+{t:'19:00',name:'加油 → 還車',note:'滿タン返し；依美麗島租車確認最終還車時間。',lat:26.2188,lng:127.6900,type:''},
+{t:'晚上',name:'HOTEL SANSUI NAHA',note:'那覇市辻 2-25-1。入住後可泡溫泉。',lat:26.2133,lng:127.6665,type:'hotel',tag:'住宿'}]},
+{id:'0904',label:'9/4 五',title:'9/4（五）｜那霸緩衝日＋國際通',color:'#54c58a',stops:[
+{t:'上午',name:'泊港漁市場',note:'把原本 9/1 的漁市場搬到這天。',lat:26.2294,lng:127.6837,type:'food',tag:'早餐'},
+{t:'上午',name:'波上宮／波之上海灘',note:'距 SANSUI 很近，輕鬆散步。',lat:26.2187,lng:127.6714,type:'water'},
+{t:'下午',name:'那霸自由活動／補考日',note:'若 9/2 或 9/3 因天氣取消，優先拿這天補。渡嘉敷可不去。',lat:26.2150,lng:127.6810,type:'pending',tag:'Buffer'},
+{t:'傍晚',name:'Hotel Abest Naha Kokusai Street',note:'那覇市久茂地 3-1-10。入住後直接逛國際通。',lat:26.2145,lng:127.6809,type:'hotel',tag:'住宿'},
+{t:'晚上',name:'國際通',note:'晚餐、甜點、最後一晚散步。',lat:26.2155,lng:127.6873,type:''}]},
+{id:'0905',label:'9/5 六',title:'9/5（六）｜回台灣',color:'#9099a8',stops:[
+{t:'早上',name:'Hotel Abest 退房',note:'班機 10:10，不安排其他景點。',lat:26.2145,lng:127.6809,type:'hotel'},
+{t:'10:10',name:'那霸機場｜IT231',note:'OKA 10:10 → TPE 10:40；無免費託運行李。',lat:26.2064,lng:127.6466,type:'air',tag:'航班'}]}
+];
+const info=`<div class="warnbox"><strong>目前唯一未鎖定：</strong>青之洞窟改期時間。這版採「9/3 最早場」作為最佳動線；若業者只能給 9/2，瀨底改成 30–45 分鐘看海／踩水，不建議一天兩次完整水上活動。</div><div class="card"><h3>✈ 新去程</h3><p><strong>9/1 VZ568</strong>｜14:55 桃園 T1 → 17:20 那霸</p><p><strong>18:20</strong> 取車後直接北上本部。</p></div><div class="card"><h3>🏨 住宿（固定）</h3><p><strong>9/1</strong> Yukurina Resort Okinawa｜本部</p><p><strong>9/2</strong> Luana Uakoko Resort Hotel｜北谷</p><p><strong>9/3</strong> HOTEL SANSUI NAHA｜那霸</p><p><strong>9/4</strong> Hotel Abest Naha Kokusai Street｜國際通</p></div><div class="card"><h3>🚗 自駕邏輯</h3><p>9/1 北上 → 9/2 北部一路南下北谷 → 9/3 從北谷先去青之洞窟再一路跑南部 → 晚上還車。這是最貼住宿點的路線。</p></div>`;
+const plans=`<div class="card"><h3>推薦版｜體力＋動線最好</h3><p><strong>9/2：</strong>古宇利 → 備瀨 → 美麗海 → 瀨底完整玩水 → 北谷</p><p><strong>9/3：</strong>青之洞窟早場 → 首里 → 知念岬 → 玉泉洞 → 瀨長島</p><div class="tags"><span class="tag good">推薦</span><span class="tag">一天一次水上活動</span></div></div><div class="card"><h3>若青之洞窟只能改 9/2</h3><p>古宇利 → 備瀨 → 美麗海 → <strong>瀨底只停 30–45 分</strong> → 青之洞窟浮潛 → 北谷。</p><div class="tags"><span class="tag warn">備案</span></div></div><div class="card"><h3>9/4 的定位</h3><p>目前更建議當<strong>緩衝日</strong>，而不是硬去渡嘉敷。少掉一天後，留一個可補天氣／青之洞窟的空檔很有價值。</p></div>`;
+let map=L.map('map',{zoomControl:false}).setView([26.43,127.79],9);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+let di=0,si=0,markers=[],route=null;
+const daysEl=document.getElementById('days'),sheet=document.getElementById('sheet'),stitle=document.getElementById('stitle'),sbody=document.getElementById('sbody');
+function icon(s,i){return L.divIcon({className:'',html:`<div class="pin ${s.type||''}">${i+1}</div>`,iconSize:[32,32],iconAnchor:[16,16]})}
+function navLink(s){return `https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}`}
+function drawTabs(){daysEl.innerHTML='';days.forEach((d,i)=>{let b=document.createElement('button');b.className='day'+(i===di?' active':'');b.textContent=d.label;b.onclick=()=>selectDay(i);daysEl.appendChild(b)})}
+function clear(){markers.forEach(m=>map.removeLayer(m));markers=[];if(route){map.removeLayer(route);route=null}}
+function draw(){clear();let d=days[di],pts=[];d.stops.forEach((s,i)=>{let m=L.marker([s.lat,s.lng],{icon:icon(s,i)}).addTo(map);m.bindPopup(`<b>${s.t}｜${s.name}</b><br><span style="font-size:12px;color:#536273">${s.note}</span><br><a href="${navLink(s)}" target="_blank">Google Maps 導航</a>`);m.on('click',()=>selectStop(i,false));markers.push(m);pts.push([s.lat,s.lng])});if(pts.length>1)route=L.polyline(pts,{color:d.color,weight:4,opacity:.75,dashArray:'8 8'}).addTo(map);fit();document.getElementById('dtitle').textContent=d.title;updateNext()}
+function fit(){let pts=days[di].stops.map(s=>[s.lat,s.lng]);if(pts.length)map.fitBounds(L.latLngBounds(pts).pad(.2),{paddingTopLeft:[20,115],paddingBottomRight:[20,165]})}
+function timelineHTML(){let d=days[di];return `<div class="timeline">${d.stops.map((s,i)=>`<div class="stop ${i===si?'active':''}" data-i="${i}"><div class="time">${s.t}</div><div><h3>${s.name}</h3><p>${s.note}</p><div class="tags">${s.tag?`<span class="tag ${s.type==='pending'?'warn':''}">${s.tag}</span>`:''}</div><a class="routebtn" href="${navLink(s)}" target="_blank">↗ Google Maps</a></div></div>`).join('')}</div>`}
+function bind(el){el.querySelectorAll('.stop').forEach(x=>x.onclick=e=>{if(e.target.closest('a'))return;selectStop(+x.dataset.i,true)})}
+function renderTimeline(){stitle.textContent=days[di].title;sbody.innerHTML=timelineHTML();bind(sbody);let dt=document.getElementById('dtimeline');dt.innerHTML=timelineHTML();bind(dt);updateNext()}
+function selectDay(i){di=i;si=0;drawTabs();draw();renderTimeline()}
+function selectStop(i,zoom=true){si=i;renderTimeline();let s=days[di].stops[i];if(zoom)map.flyTo([s.lat,s.lng],Math.max(map.getZoom(),12),{duration:.7});markers[i]&&markers[i].openPopup();updateNext()}
+function updateNext(){let s=days[di].stops[si];document.getElementById('nnum').textContent=si+1;document.getElementById('nsmall').textContent=`${days[di].label} ・ ${s.t}`;document.getElementById('nname').textContent=s.name}
+function panel(type){document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('active',b.dataset.panel===type));sheet.classList.add('open');if(type==='timeline'){renderTimeline();return}if(type==='info'){stitle.textContent='航班・住宿・交通';sbody.innerHTML=info;return}if(type==='plan'){stitle.textContent='改期後方案';sbody.innerHTML=plans;return}if(type==='notes'){stitle.textContent='旅行備忘';let v=localStorage.getItem('oknotes')||'';sbody.innerHTML=`<div class="card"><h3>存在這台裝置</h3><p>適合記青之洞窟改期結果、停車位置、臨時提醒。</p></div><textarea id="notes">${v}</textarea><div class="actions"><button class="act primary" id="save">儲存</button><button class="act" id="clearN">清除</button></div>`;document.getElementById('save').onclick=()=>{localStorage.setItem('oknotes',document.getElementById('notes').value);alert('已儲存')};document.getElementById('clearN').onclick=()=>{localStorage.removeItem('oknotes');document.getElementById('notes').value=''}}}
+document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>panel(b.dataset.panel));document.getElementById('close').onclick=()=>sheet.classList.remove('open');document.getElementById('fitBtn').onclick=fit;document.getElementById('zin').onclick=()=>map.zoomIn();document.getElementById('zout').onclick=()=>map.zoomOut();document.getElementById('next').onclick=()=>{if(si<days[di].stops.length-1)selectStop(si+1,true);else if(di<days.length-1)selectDay(di+1)};drawTabs();draw();renderTimeline();setTimeout(()=>map.invalidateSize(),200);
+</script>
+</body></html>
